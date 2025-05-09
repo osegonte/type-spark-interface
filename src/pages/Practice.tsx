@@ -3,10 +3,14 @@ import React from "react";
 import Header from "@/components/Header";
 import SessionManager from "@/components/SessionManager";
 import { ThemeProvider, useTheme } from "@/context/ThemeContext";
+import { PracticeProvider } from "@/context/PracticeContext";
 import { Separator } from "@/components/ui/separator";
+import { Button } from "@/components/ui/button";
+import { useNavigate } from "react-router-dom";
 
 const AppContent = () => {
   const { theme, setTheme } = useTheme();
+  const navigate = useNavigate();
   
   return (
     <div className="min-h-screen flex flex-col bg-background text-foreground">
@@ -14,10 +18,20 @@ const AppContent = () => {
       
       <main className="flex-1 container mx-auto px-4 py-8">
         <div className="max-w-4xl mx-auto">
-          <h1 className="text-3xl font-medium mb-2">Typing Study App</h1>
-          <p className="text-muted-foreground mb-6">
-            Build typing speed and accuracy while learning valuable content
-          </p>
+          <div className="flex justify-between items-center">
+            <div>
+              <h1 className="text-3xl font-medium mb-2">Typing Practice</h1>
+              <p className="text-muted-foreground mb-6">
+                Build typing speed and accuracy while learning valuable content
+              </p>
+            </div>
+            <Button 
+              variant="outline" 
+              onClick={() => navigate("/")}
+            >
+              Back to Home
+            </Button>
+          </div>
           
           <Separator className="my-6" />
           
@@ -36,12 +50,14 @@ const AppContent = () => {
   );
 };
 
-const Index = () => {
+const Practice = () => {
   return (
     <ThemeProvider>
-      <AppContent />
+      <PracticeProvider>
+        <AppContent />
+      </PracticeProvider>
     </ThemeProvider>
   );
 };
 
-export default Index;
+export default Practice;

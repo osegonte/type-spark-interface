@@ -2,10 +2,10 @@
 import React, { useState, useEffect } from "react";
 import TypingTest from "./TypingTest";
 import Stats from "./Stats";
-import KeyboardLayout from "./KeyboardLayout";
 import { Button } from "@/components/ui/button";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Clock } from "lucide-react";
+import { usePractice } from "@/context/PracticeContext";
 
 type SessionMode = "warm-up" | "drill" | "challenge" | "error-focus" | "review" | "spaced";
 
@@ -15,47 +15,11 @@ interface SessionStep {
   durationSeconds: number;
 }
 
-const generateSession = (): SessionStep[] => {
-  // In a real app, these would be generated based on user history, level, etc.
-  return [
-    {
-      mode: "warm-up",
-      text: "The quick brown fox jumps over the lazy dog. Simple words help build rhythm and get fingers moving.",
-      durationSeconds: 120 // 2 minutes
-    },
-    {
-      mode: "drill",
-      text: "Typing practice builds muscle memory through repetition. Focus on these letter combinations: th, ing, and, ion, ent.",
-      durationSeconds: 300 // 5 minutes
-    },
-    {
-      mode: "challenge",
-      text: "Mastering typing requires consistent practice and focused attention on both speed and accuracy rather than just one aspect alone.",
-      durationSeconds: 300 // 5 minutes
-    },
-    {
-      mode: "error-focus",
-      text: "The five boxing wizards jump quickly. Pack my box with five dozen liquor jugs. How vexingly quick daft zebras jump!",
-      durationSeconds: 180 // 3 minutes
-    },
-    {
-      mode: "review",
-      text: "Review your progress and identify areas for improvement. Slower typing with perfect form builds better habits than rushed errors.",
-      durationSeconds: 180 // 3 minutes
-    },
-    {
-      mode: "spaced",
-      text: "Recall what you've practiced. The quick brown fox jumps over the lazy dog while five boxing wizards watch quickly.",
-      durationSeconds: 120 // 2 minutes
-    }
-  ];
-};
-
 const SessionManager = () => {
+  const { practiceText } = usePractice();
   const [session, setSession] = useState<SessionStep[]>([]);
   const [currentStepIndex, setCurrentStepIndex] = useState(0);
   const [stats, setStats] = useState({ wpm: 0, accuracy: 0, errors: [] as string[] });
-  const [activeKeys, setActiveKeys] = useState<string[]>([]);
   const [problemKeys, setProblemKeys] = useState<string[]>([]);
   const [isCompleted, setIsCompleted] = useState(false);
   const [sessionInProgress, setSessionInProgress] = useState(false);
@@ -71,6 +35,52 @@ const SessionManager = () => {
       moveToNextStep();
     }
   }, [sessionInProgress, secondsRemaining, isCompleted]);
+
+  const generateSession = () => {
+    // Create chunks from the practice text
+    const words = practiceText.split(/\s+/);
+    const chunkSize = Math.floor(words.length / 6); // Divide into 6 sections for each session step
+    
+    const chunks: string[] = [];
+    for (let i = 0; i < 6; i++) {
+      const start = i * chunkSize;
+      const end = Math.min(start + chunkSize, words.length);
+      chunks.push(words.slice(start, end).join(' '));
+    }
+    
+    return [
+      {
+        mode: "warm-up" as SessionMode,
+        text: chunks[0] || "The quick brown fox jumps over the lazy dog.",
+        durationSeconds: 120 // 2 minutes
+      },
+      {
+        mode: "drill" as SessionMode,
+        text: chunks[1] || "Typing practice builds muscle memory through repetition.",
+        durationSeconds: 300 // 5 minutes
+      },
+      {
+        mode: "challenge" as SessionMode,
+        text: chunks[2] || "Mastering typing requires consistent practice and focused attention.",
+        durationSeconds: 300 // 5 minutes
+      },
+      {
+        mode: "error-focus" as SessionMode,
+        text: chunks[3] || "The five boxing wizards jump quickly.",
+        durationSeconds: 180 // 3 minutes
+      },
+      {
+        mode: "review" as SessionMode,
+        text: chunks[4] || "Review your progress and identify areas for improvement.",
+        durationSeconds: 180 // 3 minutes
+      },
+      {
+        mode: "spaced" as SessionMode,
+        text: chunks[5] || "Recall what you've practiced.",
+        durationSeconds: 120 // 2 minutes
+      }
+    ];
+  };
 
   const startSession = () => {
     const newSession = generateSession();
@@ -150,11 +160,6 @@ const SessionManager = () => {
             text={session[currentStepIndex].text}
             onComplete={handleComplete}
             mode={session[currentStepIndex].mode}
-          />
-
-          <KeyboardLayout 
-            activeKeys={activeKeys} 
-            problemKeys={problemKeys} 
           />
 
           <Stats 
