@@ -7,7 +7,7 @@ import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { FileText, FilePdf, Upload } from "lucide-react";
+import { FileText, File, Upload } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
 
 // Helper function to extract text from files
@@ -129,7 +129,7 @@ const HomeContent = () => {
                       {selectedFile.type === "text/plain" ? (
                         <FileText className="h-5 w-5 text-muted-foreground" />
                       ) : (
-                        <FilePdf className="h-5 w-5 text-muted-foreground" />
+                        <File className="h-5 w-5 text-muted-foreground" />
                       )}
                       <span className="text-sm truncate">{selectedFile.name}</span>
                     </div>
