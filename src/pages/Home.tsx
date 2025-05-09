@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Header from "@/components/Header";
@@ -7,7 +6,7 @@ import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { FileText, File, Upload } from "lucide-react";
+import { FileText, File, Upload, BarChart } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
 
 // Helper function to extract text from files
@@ -88,10 +87,22 @@ const HomeContent = () => {
       
       <main className="flex-1 container mx-auto px-4 py-8">
         <div className="max-w-4xl mx-auto">
-          <h1 className="text-3xl font-medium mb-2">TypeSpark Study App</h1>
-          <p className="text-muted-foreground mb-6">
-            Build typing speed and accuracy while learning valuable content
-          </p>
+          <div className="flex justify-between items-center">
+            <div>
+              <h1 className="text-3xl font-medium mb-2">TypeSpark Study App</h1>
+              <p className="text-muted-foreground mb-6">
+                Build typing speed and accuracy while learning valuable content
+              </p>
+            </div>
+            <Button 
+              variant="outline" 
+              onClick={() => navigate("/stats")}
+              className="flex items-center gap-2"
+            >
+              <BarChart className="h-4 w-4" />
+              View Stats
+            </Button>
+          </div>
           
           <Separator className="my-6" />
           

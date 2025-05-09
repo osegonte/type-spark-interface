@@ -1,11 +1,12 @@
-
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import TypingTest from "./TypingTest";
 import Stats from "./Stats";
 import { Button } from "@/components/ui/button";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Clock } from "lucide-react";
+import { Clock, BarChart } from "lucide-react";
 import { usePractice } from "@/context/PracticeContext";
+import { useStatsContext } from "@/context/StatsContext";
 
 type SessionMode = "warm-up" | "drill" | "challenge" | "error-focus" | "review" | "spaced";
 
@@ -24,6 +25,9 @@ const SessionManager = () => {
   const [isCompleted, setIsCompleted] = useState(false);
   const [sessionInProgress, setSessionInProgress] = useState(false);
   const [secondsRemaining, setSecondsRemaining] = useState(0);
+  const [sessionStartTime, setSessionStartTime] = useState<Date | null>(null);
+  const { addSession } = useStatsContext();
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (sessionInProgress && secondsRemaining > 0) {
@@ -88,6 +92,7 @@ const SessionManager = () => {
     setCurrentStepIndex(0);
     setSessionInProgress(true);
     setIsCompleted(false);
+    setSessionStartTime(new Date());
     setSecondaryTimer(newSession[0].durationSeconds);
   };
 
@@ -111,15 +116,32 @@ const SessionManager = () => {
       setCurrentStepIndex(nextIndex);
       setSecondaryTimer(session[nextIndex].durationSeconds);
     } else {
-      setIsCompleted(true);
-      setSessionInProgress(false);
+      finishSession();
     }
   };
 
-  // Calculate overall session progress
+  const finishSession = () => {
+    setIsCompleted(true);
+    setSessionInProgress(false);
+
+    // Record session stats
+    if (sessionStartTime) {
+      const sessionEndTime = new Date();
+      const durationMinutes = Math.round((sessionEndTime.getTime() - sessionStartTime.getTime()) / 60000);
+      
+      addSession({
+        date: new Date().toISOString(),
+        duration: durationMinutes,
+        wpm: stats.wpm,
+        accuracy: stats.accuracy,
+        mode: session[currentStepIndex]?.mode || "practice",
+        errorKeys: stats.errors
+      });
+    }
+  };
+
   const sessionProgress = ((currentStepIndex) / (session.length)) * 100;
 
-  // Format seconds as MM:SS
   const formatTime = (seconds: number) => {
     const mins = Math.floor(seconds / 60);
     const secs = seconds % 60;
@@ -187,13 +209,21 @@ const SessionManager = () => {
               sessionType="Completed"
             />
           </div>
-          <Button 
-            onClick={startSession}
-            variant="outline"
-            className="mt-4"
-          >
-            Start New Session
-          </Button>
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mt-6">
+            <Button 
+              onClick={startSession}
+              variant="outline"
+            >
+              Start New Session
+            </Button>
+            <Button 
+              onClick={() => navigate("/stats")}
+              className="flex items-center gap-2"
+            >
+              <BarChart className="h-4 w-4" />
+              View Stats
+            </Button>
+          </div>
         </div>
       )}
     </div>
