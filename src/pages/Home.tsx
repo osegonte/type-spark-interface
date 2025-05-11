@@ -1,8 +1,8 @@
+
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Header from "@/components/Header";
 import { ThemeProvider, useTheme } from "@/context/ThemeContext";
-import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -82,36 +82,37 @@ const HomeContent = () => {
     <div className="min-h-screen flex flex-col bg-background text-foreground">
       <Header theme={theme} onThemeChange={setTheme} />
       
-      <main className="flex-1 container mx-auto px-4 py-8">
-        <div className="max-w-3xl mx-auto space-y-6">
-          <div className="text-center">
-            <h1 className="text-4xl font-bold mb-3">TypeSpark Study App</h1>
-            <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+      <main className="flex-1 container mx-auto px-4 py-6">
+        <div className="max-w-4xl mx-auto space-y-6">
+          <div className="text-center mb-8">
+            <h1 className="text-3xl font-bold">TypeSpark Study App</h1>
+            <p className="text-muted-foreground mt-2">
               Build your typing speed and accuracy while learning valuable content
             </p>
           </div>
           
-          <div className="flex justify-end">
+          <div className="flex justify-end mb-4">
             <Button 
               variant="outline" 
               onClick={() => navigate("/stats")}
               className="flex items-center gap-2"
+              size="sm"
             >
               <BarChart className="h-4 w-4" />
               View Stats
             </Button>
           </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-            <Card className="shadow-sm hover:shadow-md transition-shadow duration-300">
-              <CardHeader className="space-y-1 py-4">
-                <CardTitle className="text-lg font-medium">Upload Learning Material</CardTitle>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <Card className="shadow-sm hover:shadow transition-shadow duration-300">
+              <CardHeader className="py-3">
+                <CardTitle className="text-lg">Upload Learning Material</CardTitle>
                 <CardDescription className="text-xs">Upload a text or PDF file to practice with</CardDescription>
               </CardHeader>
-              <CardContent className="py-2">
+              <CardContent className="py-2 pb-4">
                 <div className="flex flex-col space-y-3">
-                  <div className="border-2 border-dashed border-muted rounded-lg p-4 text-center transition-colors hover:border-primary/50">
-                    <Upload className="mx-auto h-8 w-8 text-muted-foreground mb-1" />
+                  <div className="border border-dashed border-muted rounded-lg p-3 text-center transition-colors hover:border-primary/50">
+                    <Upload className="mx-auto h-6 w-6 text-muted-foreground mb-1" />
                     <p className="text-xs text-muted-foreground">
                       Drag and drop your file here or click to browse
                     </p>
@@ -146,55 +147,54 @@ const HomeContent = () => {
               </CardContent>
             </Card>
             
-            <Card className="shadow-sm hover:shadow-md transition-shadow duration-300">
-              <CardHeader className="space-y-1 py-4">
-                <CardTitle className="text-lg font-medium">Custom Text</CardTitle>
+            <Card className="shadow-sm hover:shadow transition-shadow duration-300">
+              <CardHeader className="py-3">
+                <CardTitle className="text-lg">Custom Text</CardTitle>
                 <CardDescription className="text-xs">Paste or type the text you want to practice</CardDescription>
               </CardHeader>
-              <CardContent className="py-2">
-                <div className="flex flex-col space-y-3">
-                  <Textarea
-                    className="w-full h-28 p-2 text-sm border rounded-md focus:outline-none focus:ring-2 focus:ring-primary/50 resize-none bg-accent/10"
-                    placeholder="Paste or type your practice text here..."
-                    value={customText}
-                    onChange={(e) => setCustomText(e.target.value)}
-                  />
-                </div>
+              <CardContent className="py-2 pb-4">
+                <Textarea
+                  className="h-24 text-sm resize-none bg-accent/5 focus:bg-accent/10"
+                  placeholder="Paste or type your practice text here..."
+                  value={customText}
+                  onChange={(e) => setCustomText(e.target.value)}
+                />
               </CardContent>
             </Card>
           </div>
           
-          <div className="mt-6 text-center">
+          <div className="text-center my-6">
             <Button 
-              size="lg" 
               onClick={handleStartSession}
-              className="px-6 py-2 rounded-xl font-medium transition-all hover:scale-105"
+              className="px-8 py-2 rounded-lg font-medium transition-all hover:scale-105"
             >
               Start Typing Practice
             </Button>
           </div>
           
-          <div className="mt-8 p-5 bg-accent/10 rounded-xl">
-            <h2 className="text-xl font-medium mb-3 text-center">Why TypeSpark?</h2>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div className="text-center">
-                <h3 className="text-base font-medium mb-1">Learn While Typing</h3>
-                <p className="text-sm text-muted-foreground">Practice with your study materials to improve retention</p>
+          <Card className="bg-accent/5 border-none shadow-none">
+            <CardContent className="pt-4">
+              <h2 className="text-lg font-medium mb-3 text-center">Why TypeSpark?</h2>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <div className="text-center p-2">
+                  <h3 className="text-sm font-medium mb-1">Learn While Typing</h3>
+                  <p className="text-xs text-muted-foreground">Practice with study materials to improve retention</p>
+                </div>
+                <div className="text-center p-2">
+                  <h3 className="text-sm font-medium mb-1">Track Progress</h3>
+                  <p className="text-xs text-muted-foreground">View detailed stats on typing speed and accuracy</p>
+                </div>
+                <div className="text-center p-2">
+                  <h3 className="text-sm font-medium mb-1">Build Consistency</h3>
+                  <p className="text-xs text-muted-foreground">Track daily streaks and practice minutes</p>
+                </div>
               </div>
-              <div className="text-center">
-                <h3 className="text-base font-medium mb-1">Track Progress</h3>
-                <p className="text-sm text-muted-foreground">View detailed stats on your typing speed and accuracy</p>
-              </div>
-              <div className="text-center">
-                <h3 className="text-base font-medium mb-1">Build Consistency</h3>
-                <p className="text-sm text-muted-foreground">Track your daily streaks and practice minutes</p>
-              </div>
-            </div>
-          </div>
+            </CardContent>
+          </Card>
         </div>
       </main>
       
-      <footer className="py-4 border-t bg-muted/30">
+      <footer className="py-3 border-t bg-muted/20">
         <div className="container mx-auto px-4">
           <p className="text-xs text-center text-muted-foreground">
             TypeSpark Study Edition - Designed for maximum comfort and learning efficiency
