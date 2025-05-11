@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { FileText, File, Upload, BarChart } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
+import { Textarea } from "@/components/ui/textarea";
 
 // Helper function to extract text from files
 const extractTextFromFile = async (file: File): Promise<string> => {
@@ -82,7 +83,7 @@ const HomeContent = () => {
       <Header theme={theme} onThemeChange={setTheme} />
       
       <main className="flex-1 container mx-auto px-4 py-8">
-        <div className="max-w-4xl mx-auto space-y-8">
+        <div className="max-w-3xl mx-auto space-y-6">
           <div className="text-center">
             <h1 className="text-4xl font-bold mb-3">TypeSpark Study App</h1>
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
@@ -101,17 +102,17 @@ const HomeContent = () => {
             </Button>
           </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <Card className="shadow-md hover:shadow-lg transition-shadow duration-300">
-              <CardHeader className="space-y-1">
-                <CardTitle className="text-xl font-medium">Upload Learning Material</CardTitle>
-                <CardDescription>Upload a text or PDF file to practice with</CardDescription>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+            <Card className="shadow-sm hover:shadow-md transition-shadow duration-300">
+              <CardHeader className="space-y-1 py-4">
+                <CardTitle className="text-lg font-medium">Upload Learning Material</CardTitle>
+                <CardDescription className="text-xs">Upload a text or PDF file to practice with</CardDescription>
               </CardHeader>
-              <CardContent>
-                <div className="flex flex-col space-y-4">
-                  <div className="border-2 border-dashed border-muted rounded-lg p-8 text-center transition-colors hover:border-primary/50">
-                    <Upload className="mx-auto h-12 w-12 text-muted-foreground mb-2" />
-                    <p className="text-sm text-muted-foreground">
+              <CardContent className="py-2">
+                <div className="flex flex-col space-y-3">
+                  <div className="border-2 border-dashed border-muted rounded-lg p-4 text-center transition-colors hover:border-primary/50">
+                    <Upload className="mx-auto h-8 w-8 text-muted-foreground mb-1" />
+                    <p className="text-xs text-muted-foreground">
                       Drag and drop your file here or click to browse
                     </p>
                     <Input 
@@ -123,7 +124,8 @@ const HomeContent = () => {
                     />
                     <Button 
                       variant="outline" 
-                      className="mt-4"
+                      size="sm"
+                      className="mt-2"
                       onClick={() => document.getElementById("file-upload")?.click()}
                     >
                       Browse Files
@@ -131,70 +133,70 @@ const HomeContent = () => {
                   </div>
                   
                   {selectedFile && (
-                    <div className="flex items-center gap-2 p-3 bg-accent/20 rounded-md">
+                    <div className="flex items-center gap-2 p-2 bg-accent/20 rounded-md">
                       {selectedFile.type === "text/plain" ? (
-                        <FileText className="h-5 w-5 text-primary" />
+                        <FileText className="h-4 w-4 text-primary" />
                       ) : (
-                        <File className="h-5 w-5 text-primary" />
+                        <File className="h-4 w-4 text-primary" />
                       )}
-                      <span className="text-sm truncate">{selectedFile.name}</span>
+                      <span className="text-xs truncate">{selectedFile.name}</span>
                     </div>
                   )}
                 </div>
               </CardContent>
             </Card>
             
-            <Card className="shadow-md hover:shadow-lg transition-shadow duration-300">
-              <CardHeader className="space-y-1">
-                <CardTitle className="text-xl font-medium">Custom Text</CardTitle>
-                <CardDescription>Paste or type the text you want to practice</CardDescription>
+            <Card className="shadow-sm hover:shadow-md transition-shadow duration-300">
+              <CardHeader className="space-y-1 py-4">
+                <CardTitle className="text-lg font-medium">Custom Text</CardTitle>
+                <CardDescription className="text-xs">Paste or type the text you want to practice</CardDescription>
               </CardHeader>
-              <CardContent>
-                <div className="flex flex-col space-y-4">
-                  <textarea
-                    className="w-full h-40 p-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary/50 resize-none bg-accent/10"
+              <CardContent className="py-2">
+                <div className="flex flex-col space-y-3">
+                  <Textarea
+                    className="w-full h-28 p-2 text-sm border rounded-md focus:outline-none focus:ring-2 focus:ring-primary/50 resize-none bg-accent/10"
                     placeholder="Paste or type your practice text here..."
                     value={customText}
                     onChange={(e) => setCustomText(e.target.value)}
-                  ></textarea>
+                  />
                 </div>
               </CardContent>
             </Card>
           </div>
           
-          <div className="mt-8 text-center">
+          <div className="mt-6 text-center">
             <Button 
               size="lg" 
               onClick={handleStartSession}
-              className="px-8 py-6 rounded-xl text-lg font-medium transition-all hover:scale-105"
+              className="px-6 py-2 rounded-xl font-medium transition-all hover:scale-105"
             >
               Start Typing Practice
             </Button>
           </div>
           
-          <div className="mt-12 p-6 bg-accent/10 rounded-xl">
-            <h2 className="text-2xl font-medium mb-4 text-center">Why TypeSpark?</h2>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="mt-8 p-5 bg-accent/10 rounded-xl">
+            <h2 className="text-xl font-medium mb-3 text-center">Why TypeSpark?</h2>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div className="text-center">
-                <h3 className="text-lg font-medium mb-2">Learn While Typing</h3>
-                <p className="text-muted-foreground">Practice with your study materials to improve retention</p>
+                <h3 className="text-base font-medium mb-1">Learn While Typing</h3>
+                <p className="text-sm text-muted-foreground">Practice with your study materials to improve retention</p>
               </div>
               <div className="text-center">
-                <h3 className="text-lg font-medium mb-2">Track Progress</h3>
-                <p className="text-muted-foreground">View detailed stats on your typing speed and accuracy</p>
+                <h3 className="text-base font-medium mb-1">Track Progress</h3>
+                <p className="text-sm text-muted-foreground">View detailed stats on your typing speed and accuracy</p>
               </div>
               <div className="text-center">
-                <h3 className="text-lg font-medium mb-2">Build Consistency</h3>
-                <p className="text-muted-foreground">Track your daily streaks and practice minutes</p>
+                <h3 className="text-base font-medium mb-1">Build Consistency</h3>
+                <p className="text-sm text-muted-foreground">Track your daily streaks and practice minutes</p>
               </div>
             </div>
           </div>
         </div>
       </main>
       
-      <footer className="py-6 border-t bg-muted/30">
+      <footer className="py-4 border-t bg-muted/30">
         <div className="container mx-auto px-4">
-          <p className="text-sm text-center text-muted-foreground">
+          <p className="text-xs text-center text-muted-foreground">
             TypeSpark Study Edition - Designed for maximum comfort and learning efficiency
           </p>
         </div>
