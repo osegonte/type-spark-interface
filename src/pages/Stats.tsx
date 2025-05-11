@@ -37,15 +37,22 @@ import { useStatsContext } from "@/context/StatsContext";
 const StatContent = () => {
   const { theme, setTheme } = useTheme();
   const navigate = useNavigate();
-  const { stats } = useStatsContext();
+  const { 
+    averageWpm, 
+    averageAccuracy, 
+    totalPracticeMinutes, 
+    currentStreak, 
+    longestStreak, 
+    sessionHistory 
+  } = useStatsContext();
 
   // Chart data from stats
-  const wpmData = stats.sessionHistory.map((session, index) => ({
+  const wpmData = sessionHistory.map((session, index) => ({
     name: `Session ${index + 1}`,
     wpm: session.wpm,
   }));
 
-  const accuracyData = stats.sessionHistory.map((session, index) => ({
+  const accuracyData = sessionHistory.map((session, index) => ({
     name: `Session ${index + 1}`,
     accuracy: session.accuracy,
   }));
@@ -80,7 +87,7 @@ const StatContent = () => {
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="text-sm font-medium text-muted-foreground">Average WPM</p>
-                    <h3 className="text-2xl font-bold">{stats.averageWpm}</h3>
+                    <h3 className="text-2xl font-bold">{averageWpm}</h3>
                   </div>
                   <div className="p-2 bg-primary/10 rounded-full">
                     <TrendingUp className="h-5 w-5 text-primary" />
@@ -94,7 +101,7 @@ const StatContent = () => {
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="text-sm font-medium text-muted-foreground">Accuracy</p>
-                    <h3 className="text-2xl font-bold">{stats.averageAccuracy}%</h3>
+                    <h3 className="text-2xl font-bold">{averageAccuracy}%</h3>
                   </div>
                   <div className="p-2 bg-primary/10 rounded-full">
                     <Check className="h-5 w-5 text-primary" />
@@ -108,7 +115,7 @@ const StatContent = () => {
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="text-sm font-medium text-muted-foreground">Practice Time</p>
-                    <h3 className="text-2xl font-bold">{stats.totalPracticeMinutes} mins</h3>
+                    <h3 className="text-2xl font-bold">{totalPracticeMinutes} mins</h3>
                   </div>
                   <div className="p-2 bg-primary/10 rounded-full">
                     <Clock className="h-5 w-5 text-primary" />
@@ -122,7 +129,7 @@ const StatContent = () => {
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="text-sm font-medium text-muted-foreground">Current Streak</p>
-                    <h3 className="text-2xl font-bold">{stats.currentStreak} days</h3>
+                    <h3 className="text-2xl font-bold">{currentStreak} days</h3>
                   </div>
                   <div className="p-2 bg-primary/10 rounded-full">
                     <Activity className="h-5 w-5 text-primary" />
@@ -221,9 +228,9 @@ const StatContent = () => {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {stats.sessionHistory.slice(-5).map((session, index) => (
+                  {sessionHistory.slice(-5).reverse().map((session, index) => (
                     <TableRow key={index}>
-                      <TableCell>{session.date}</TableCell>
+                      <TableCell>{new Date(session.date).toLocaleString()}</TableCell>
                       <TableCell>{session.duration} mins</TableCell>
                       <TableCell>{session.wpm}</TableCell>
                       <TableCell>{session.accuracy}%</TableCell>
