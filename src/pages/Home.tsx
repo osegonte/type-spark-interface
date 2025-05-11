@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Header from "@/components/Header";
@@ -15,7 +16,6 @@ const extractTextFromFile = async (file: File): Promise<string> => {
     return await file.text();
   } else if (file.type === "application/pdf") {
     // In a real implementation, you would use a PDF parsing library
-    // This is a placeholder that would need to be replaced with actual PDF parsing
     return "PDF content extraction would go here. For now, this is placeholder text for the PDF you uploaded.";
   }
   throw new Error("Unsupported file type");
@@ -32,7 +32,6 @@ const HomeContent = () => {
     if (e.target.files && e.target.files[0]) {
       const file = e.target.files[0];
       
-      // Check if the file type is supported
       if (file.type === "text/plain" || file.type === "application/pdf") {
         setSelectedFile(file);
         toast({
@@ -66,8 +65,6 @@ const HomeContent = () => {
         return;
       }
       
-      // Here we would normally store the text in state or context
-      // For this example, we'll use localStorage as a simple solution
       localStorage.setItem("practiceText", practiceText);
       navigate("/practice");
       
@@ -86,14 +83,15 @@ const HomeContent = () => {
       <Header theme={theme} onThemeChange={setTheme} />
       
       <main className="flex-1 container mx-auto px-4 py-8">
-        <div className="max-w-4xl mx-auto">
-          <div className="flex justify-between items-center">
-            <div>
-              <h1 className="text-3xl font-medium mb-2">TypeSpark Study App</h1>
-              <p className="text-muted-foreground mb-6">
-                Build typing speed and accuracy while learning valuable content
-              </p>
-            </div>
+        <div className="max-w-4xl mx-auto space-y-8">
+          <div className="text-center">
+            <h1 className="text-4xl font-bold mb-3 bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">TypeSpark Study App</h1>
+            <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+              Build your typing speed and accuracy while learning valuable content
+            </p>
+          </div>
+          
+          <div className="flex justify-end">
             <Button 
               variant="outline" 
               onClick={() => navigate("/stats")}
@@ -104,19 +102,17 @@ const HomeContent = () => {
             </Button>
           </div>
           
-          <Separator className="my-6" />
-          
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <Card>
-              <CardHeader>
-                <CardTitle>Upload Learning Material</CardTitle>
+            <Card className="shadow-md hover:shadow-lg transition-shadow duration-300">
+              <CardHeader className="space-y-1">
+                <CardTitle className="text-xl font-medium">Upload Learning Material</CardTitle>
                 <CardDescription>Upload a text or PDF file to practice with</CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="flex flex-col space-y-4">
-                  <div className="border-2 border-dashed border-muted rounded-lg p-6 text-center">
-                    <Upload className="mx-auto h-10 w-10 text-muted-foreground" />
-                    <p className="mt-2 text-sm text-muted-foreground">
+                  <div className="border-2 border-dashed border-muted rounded-lg p-8 text-center transition-colors hover:border-primary/50">
+                    <Upload className="mx-auto h-12 w-12 text-muted-foreground mb-2" />
+                    <p className="text-sm text-muted-foreground">
                       Drag and drop your file here or click to browse
                     </p>
                     <Input 
@@ -128,7 +124,7 @@ const HomeContent = () => {
                     />
                     <Button 
                       variant="outline" 
-                      className="mt-2"
+                      className="mt-4"
                       onClick={() => document.getElementById("file-upload")?.click()}
                     >
                       Browse Files
@@ -136,11 +132,11 @@ const HomeContent = () => {
                   </div>
                   
                   {selectedFile && (
-                    <div className="flex items-center space-x-2 p-2 bg-muted/30 rounded-md">
+                    <div className="flex items-center gap-2 p-3 bg-accent/20 rounded-md">
                       {selectedFile.type === "text/plain" ? (
-                        <FileText className="h-5 w-5 text-muted-foreground" />
+                        <FileText className="h-5 w-5 text-primary" />
                       ) : (
-                        <File className="h-5 w-5 text-muted-foreground" />
+                        <File className="h-5 w-5 text-primary" />
                       )}
                       <span className="text-sm truncate">{selectedFile.name}</span>
                     </div>
@@ -149,15 +145,15 @@ const HomeContent = () => {
               </CardContent>
             </Card>
             
-            <Card>
-              <CardHeader>
-                <CardTitle>Custom Text</CardTitle>
+            <Card className="shadow-md hover:shadow-lg transition-shadow duration-300">
+              <CardHeader className="space-y-1">
+                <CardTitle className="text-xl font-medium">Custom Text</CardTitle>
                 <CardDescription>Paste or type the text you want to practice</CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="flex flex-col space-y-4">
                   <textarea
-                    className="w-full h-32 p-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-accent resize-none bg-muted/30"
+                    className="w-full h-40 p-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary/50 resize-none bg-accent/10"
                     placeholder="Paste or type your practice text here..."
                     value={customText}
                     onChange={(e) => setCustomText(e.target.value)}
@@ -167,18 +163,40 @@ const HomeContent = () => {
             </Card>
           </div>
           
-          <div className="mt-6 text-center">
-            <Button size="lg" onClick={handleStartSession}>
+          <div className="mt-8 text-center">
+            <Button 
+              size="lg" 
+              onClick={handleStartSession}
+              className="px-8 py-6 rounded-xl text-lg font-medium transition-all hover:scale-105"
+            >
               Start Typing Practice
             </Button>
+          </div>
+          
+          <div className="mt-12 p-6 bg-accent/10 rounded-xl">
+            <h2 className="text-2xl font-medium mb-4 text-center">Why TypeSpark?</h2>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div className="text-center">
+                <h3 className="text-lg font-medium mb-2">Learn While Typing</h3>
+                <p className="text-muted-foreground">Practice with your study materials to improve retention</p>
+              </div>
+              <div className="text-center">
+                <h3 className="text-lg font-medium mb-2">Track Progress</h3>
+                <p className="text-muted-foreground">View detailed stats on your typing speed and accuracy</p>
+              </div>
+              <div className="text-center">
+                <h3 className="text-lg font-medium mb-2">Build Consistency</h3>
+                <p className="text-muted-foreground">Track your daily streaks and practice minutes</p>
+              </div>
+            </div>
           </div>
         </div>
       </main>
       
-      <footer className="py-6 border-t">
+      <footer className="py-6 border-t bg-muted/30">
         <div className="container mx-auto px-4">
           <p className="text-sm text-center text-muted-foreground">
-            Designed for maximum comfort and learning efficiency
+            TypeSpark Study Edition - Designed for maximum comfort and learning efficiency
           </p>
         </div>
       </footer>
