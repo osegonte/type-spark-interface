@@ -43,8 +43,24 @@ const StatContent = () => {
     totalPracticeMinutes, 
     currentStreak, 
     longestStreak, 
-    sessionHistory 
+    sessionHistory,
+    isLoading
   } = useStatsContext();
+
+  // If loading, show a simple loading state
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex flex-col bg-background text-foreground">
+        <Header theme={theme} onThemeChange={setTheme} />
+        <main className="flex-1 container mx-auto px-4 py-8 flex items-center justify-center">
+          <div className="text-center">
+            <h2 className="text-2xl font-medium mb-4">Loading your stats...</h2>
+            <div className="animate-pulse h-4 w-48 bg-muted rounded mx-auto"></div>
+          </div>
+        </main>
+      </div>
+    );
+  }
 
   // Chart data from stats
   const wpmData = sessionHistory.map((session, index) => ({

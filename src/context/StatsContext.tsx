@@ -1,5 +1,6 @@
 
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import { getStats, saveSession } from '@/utils/dataProvider';
 
 export interface SessionData {
   date: string;
@@ -19,56 +20,42 @@ interface StatsContextData {
   totalSessions: number;
   sessionHistory: SessionData[];
   addSession: (session: SessionData) => void;
+  isLoading: boolean;
 }
 
 const StatsContext = createContext<StatsContextData | undefined>(undefined);
 
 export function StatsProvider({ children }: { children: ReactNode }) {
-  const [sessionHistory, setSessionHistory] = useState<SessionData[]>(() => {
-    const saved = localStorage.getItem('typingStats');
-    return saved ? JSON.parse(saved).sessionHistory : [];
-  });
-  
+  const [sessionHistory, setSessionHistory] = useState<SessionData[]>([]);
   const [averageWpm, setAverageWpm] = useState(0);
   const [averageAccuracy, setAverageAccuracy] = useState(0);
   const [totalPracticeMinutes, setTotalPracticeMinutes] = useState(0);
   const [currentStreak, setCurrentStreak] = useState(0);
   const [longestStreak, setLongestStreak] = useState(0);
+  const [isLoading, setIsLoading] = useState(true);
   
-  // Calculate stats whenever session history changes
+  // Load initial stats
   useEffect(() => {
-    if (sessionHistory.length === 0) {
-      setAverageWpm(0);
-      setAverageAccuracy(0);
-      setTotalPracticeMinutes(0);
-      return;
-    }
+    const loadStats = async () => {
+      try {
+        setIsLoading(true);
+        const stats = await getStats();
+        
+        setSessionHistory(stats.sessionHistory);
+        setAverageWpm(stats.averageWpm);
+        setAverageAccuracy(stats.averageAccuracy);
+        setTotalPracticeMinutes(stats.totalPracticeMinutes);
+        setCurrentStreak(stats.currentStreak);
+        setLongestStreak(stats.longestStreak);
+      } catch (error) {
+        console.error("Error loading stats:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
     
-    // Calculate average WPM
-    const totalWpm = sessionHistory.reduce((sum, session) => sum + session.wpm, 0);
-    setAverageWpm(Math.round(totalWpm / sessionHistory.length));
-    
-    // Calculate average accuracy
-    const totalAccuracy = sessionHistory.reduce((sum, session) => sum + session.accuracy, 0);
-    setAverageAccuracy(Math.round(totalAccuracy / sessionHistory.length));
-    
-    // Calculate total practice time
-    const totalMinutes = sessionHistory.reduce((sum, session) => sum + session.duration, 0);
-    setTotalPracticeMinutes(totalMinutes);
-    
-    // Calculate streaks
-    calculateStreaks();
-    
-    // Save to local storage
-    localStorage.setItem('typingStats', JSON.stringify({ 
-      sessionHistory,
-      averageWpm: Math.round(totalWpm / sessionHistory.length),
-      averageAccuracy: Math.round(totalAccuracy / sessionHistory.length),
-      totalPracticeMinutes: totalMinutes,
-      currentStreak,
-      longestStreak
-    }));
-  }, [sessionHistory]);
+    loadStats();
+  }, []);
   
   const calculateStreaks = () => {
     if (sessionHistory.length === 0) {
@@ -115,8 +102,36 @@ export function StatsProvider({ children }: { children: ReactNode }) {
     setLongestStreak(prev => Math.max(prev, streak));
   };
   
-  const addSession = (session: SessionData) => {
-    setSessionHistory(prev => [...prev, session]);
+  const addSession = async (session: SessionData) => {
+    try {
+      setIsLoading(true);
+      
+      // Get current stats for the data provider
+      const currentStats = {
+        sessionHistory,
+        averageWpm,
+        averageAccuracy,
+        totalPracticeMinutes,
+        currentStreak,
+        longestStreak
+      };
+      
+      // Save session and get updated stats
+      const updatedStats = await saveSession(session, currentStats);
+      
+      // Update state with new values
+      setSessionHistory(updatedStats.sessionHistory);
+      setAverageWpm(updatedStats.averageWpm);
+      setAverageAccuracy(updatedStats.averageAccuracy);
+      setTotalPracticeMinutes(updatedStats.totalPracticeMinutes);
+      
+      // Recalculate streaks
+      calculateStreaks();
+    } catch (error) {
+      console.error("Error adding session:", error);
+    } finally {
+      setIsLoading(false);
+    }
   };
   
   return (
@@ -128,7 +143,8 @@ export function StatsProvider({ children }: { children: ReactNode }) {
       longestStreak,
       totalSessions: sessionHistory.length,
       sessionHistory,
-      addSession
+      addSession,
+      isLoading
     }}>
       {children}
     </StatsContext.Provider>
