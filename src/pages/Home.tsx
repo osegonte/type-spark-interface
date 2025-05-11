@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Header from "@/components/Header";
@@ -85,7 +84,7 @@ const HomeContent = () => {
       <main className="flex-1 container mx-auto px-4 py-8">
         <div className="max-w-4xl mx-auto space-y-8">
           <div className="text-center">
-            <h1 className="text-4xl font-bold mb-3 bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">TypeSpark Study App</h1>
+            <h1 className="text-4xl font-bold mb-3">TypeSpark Study App</h1>
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
               Build your typing speed and accuracy while learning valuable content
             </p>
